@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siskastih Доска</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a1a;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Кнопки входа */
+        .auth-bar {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .auth-btn {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .login-btn {
+            background: #333;
+            color: white;
+            border: 1px solid #ff6b6b;
+        }
+
+        .register-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .user-info {
+            background: #333;
+            padding: 10px 25px;
+            border-radius: 30px;
+            color: #ff6b6b;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .logout-btn {
+            padding: 5px 15px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Навигация по вкладкам */
+        .tab-nav {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .tab-btn {
+            padding: 15px 50px;
+            font-size: 2rem;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 2px solid #ff6b6b;
+        }
+
+        .tab-btn.active {
+            background: #ff6b6b;
+            color: black;
+        }
+
+        h1 {
+            font-size: 5rem;
+            color: #ff6b6b;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        h1 span {
+            color: white;
+        }
+
+        .sub {
+            color: #00ffff;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Галерея */
+        .gallery {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+        }
+
+        .card.pending {
+            border: 3px solid #ffaa00;
+        }
+
+        .media {
+            width: 100%;
+            aspect-ratio: 1 / 1.1;
+            background-size: cover;
+            background-position: center;
+            background-color: #333;
+        }
+
+        .card video {
+            width: 100%;
+            aspect-ratio: 1 / 1.1;
+            object-fit: cover;
+        }
+
+        .caption {
+            padding: 15px;
+            font-size: 1.5rem;
+        }
+
+        .caption p {
+            color: #ff6b6b;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            color: #e7fa39;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-login {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Верхняя панель -->
+    <div class="auth-bar" id="authBar">
+        <!-- Сюда будут вставляться кнопки -->
+    </div>
+
+    <!-- Навигация -->
+    <div class="tab-nav">
+        <a href="#men" class="tab-btn" id="link-men">🚹 MANS</a>
+        <a href="#women" class="tab-btn" id="link-women">🚺 WOMANS</a>
+    </div>
+
+    <!-- Контент -->
+    <div id="content">
+        <!-- Сюда будет загружаться контент -->
+    </div>
+
+    <!-- Футер -->
+    <div class="footer">
+        @Kasador19 | @vpizdyeto
+    </div>
+
+    <!-- Модалка входа -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2>🔐 Вход</h2>
+            <input type="text" id="loginNick" placeholder="Никнейм">
+            <input type="password" id="loginPass" placeholder="Пароль">
+            <div class="error" id="loginError"></div>
+            <button class="modal-btn modal-login" onclick="handleLogin()">Войти</button>
+            <button class="modal-btn" onclick="closeModal()">Отмена</button>
+            <p style="margin-top: 15px;">
+                Нет аккаунта? 
+                <a href="register.html" style="color: #ff6b6b;">Регистрация</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Данные
+        let currentUser = null;
+        let currentTab = 'men';
+
+        // Загрузка при старте
+        window.addEventListener('load', function() {
+            checkAuth();
+            loadContent();
+            checkHash();
+        });
+
+        window.addEventListener('hashchange', checkHash);
+
+        function checkHash() {
+            if (window.location.hash === '#women') {
+                currentTab = 'women';
+                document.getElementById('link-men').classList.remove('active');
+                document.getElementById('link-women').classList.add('active');
+            } else {
+                currentTab = 'men';
+                document.getElementById('link-men').classList.add('active');
+                document.getElementById('link-women').classList.remove('active');
+            }
+            loadContent();
+        }
+
+        function checkAuth() {
+            const saved = localStorage.getItem('currentUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+            }
+            updateAuthBar();
+        }
+
+        function updateAuthBar() {
+            const bar = document.getElementById('authBar');
+            if (currentUser) {
+                bar.innerHTML = `
+                    <div class="user-info">
+                        <span>👤 ${currentUser.nickname}</span>
+                        <button class="logout-btn" onclick="logout()">Выйти</button>
+                    </div>
+                    <a href="register.html" class="auth-btn register-btn">➕ Добавить</a>
+                `;
+            } else {
+                bar.innerHTML = `
+                    <button class="auth-btn login-btn" onclick="openModal()">🔑 Войти</button>
+                    <a href="register.html" class="auth-btn register-btn">📝 Регистрация</a>
+                `;
+            }
+        }
+
+        function openModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginError').textContent = '';
+        }
+
+        function handleLogin() {
+            const nick = document.getElementById('loginNick').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            if (!nick || !pass) {
+                document.getElementById('loginError').textContent = 'Заполни все поля!';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.nickname === nick && u.password === pass);
+
+            if (user) {
+                currentUser = { nickname: user.nickname, gender: user.gender };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                closeModal();
+                updateAuthBar();
+                loadContent();
+            } else {
+                document.getElementById('loginError').textContent = 'Неверный ник или пароль';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateAuthBar();
+            loadContent();
+        }
+
+        function loadContent() {
+            const content = document.getElementById('content');
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            let html = '';
+            
+            if (currentTab === 'men') {
+                html = `
+                    <h1>Files <span>Siskastih</span> Boys</h1>
+                    <div class="sub">Доска · Почёта</div>
+                    <div class="gallery" id="gallery">
+                `;
+            } else {
+                html = `
+                    <h1>Files <span>Siskastih</span> Girls</h1>
+                    <div class="sub">Доска · Позора</div>
+                    <div class="gallery" id="gallery">
+                `;
+            }
+
+            // Фильтруем пользователей по полу и статусу
+            const filteredUsers = users.filter(user => 
+                user.gender === currentTab && (user.approved || (currentUser && user.nickname === currentUser.nickname))
+            );
+
+            if (filteredUsers.length === 0) {
+                html += '<div style="grid-column: 1/-1; text-align: center; color: white; font-size: 2rem;">Пока нет карточек 😢</div>';
+            } else {
+                filteredUsers.forEach(user => {
+                    const pendingClass = !user.approved ? 'pending' : '';
+                    const isVideo = user.fileType && user.fileType.startsWith('video/');
+                    
+                    html += `<div class="card ${pendingClass}">`;
+                    
+                    if (isVideo) {
+                        html += `
+                            <video autoplay loop muted playsinline>
+                                <source src="${user.fileData}" type="${user.fileType}">
+                            </video>
+                        `;
+                    } else {
+                        html += `<div class="media" style="background-image: url('${user.fileData}');"></div>`;
+                    }
+                    
+                    html += `
+                        <div class="caption">
+                            ${user.nickname} ${!user.approved ? '⏳' : ''}
+                            <p>${user.description}</p>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            html += '</div>';
+            content.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

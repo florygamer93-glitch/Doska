@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Siskastih</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a1a;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Вход в админку */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+        }
+
+        .login-container h1 {
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 3rem;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .login-container input:focus {
+            border-color: #ff6b6b;
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .login-btn:hover {
+            background: #ff4444;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Админ панель */
+        .admin-panel {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #333;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #ff6b6b;
+            font-size: 2.5rem;
+        }
+
+        .header h1 span {
+            color: white;
+        }
+
+        .logout-btn {
+            padding: 10px 30px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #333;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .stat-card .label {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #ff6b6b;
+            color: black;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .card.pending {
+            border: 3px solid #ffaa00;
+        }
+
+        .card.approved {
+            border: 3px solid #00aa00;
+        }
+
+        .media {
+            width: 100%;
+            aspect-ratio: 1 / 1.1;
+            background-size: cover;
+            background-position: center;
+            background-color: #333;
+        }
+
+        .card video {
+            width: 100%;
+            aspect-ratio: 1 / 1.1;
+            object-fit: cover;
+        }
+
+        .info {
+            padding: 15px;
+        }
+
+        .info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .info .gender {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            margin: 10px 0;
+        }
+
+        .info .date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn.approve {
+            background: #00aa00;
+            color: white;
+        }
+
+        .btn.reject {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn.delete {
+            background: #333;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+        }
+
+        .back-link:hover {
+            background: #ff6b6b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Форма входа -->
+    <div class="login-container" id="loginForm">
+        <h1>🔐 Admin</h1>
+        <input type="text" id="adminLogin" placeholder="Логин" value="Roman">
+        <input type="password" id="adminPass" placeholder="Пароль" value="Roman">
+        <div class="error" id="loginError"></div>
+        <button class="login-btn" onclick="handleAdminLogin()">Войти</button>
+    </div>
+
+    <!-- Админ панель (изначально скрыта) -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="header">
+            <h1>Admin <span>Panel</span></h1>
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalCount">0</div>
+                <div class="label">Всего карточек</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="pendingCount">0</div>
+                <div class="label">Ожидают</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="approvedCount">0</div>
+                <div class="label">Одобрено</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('all')" id="tabAll">Все</button>
+            <button class="tab" onclick="switchTab('pending')" id="tabPending">На модерации</button>
+            <button class="tab" onclick="switchTab('approved')" id="tabApproved">Одобренные</button>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid">
+            <!-- Сюда будут загружаться карточки -->
+        </div>
+
+        <a href="index.html" class="back-link">← На главную</a>
+    </div>
+
+    <script>
+        // Данные админа (логин: Roman, пароль: Roman)
+        const ADMIN_LOGIN = 'Roman';
+        const ADMIN_PASS = 'Roman';
+        
+        let currentTab = 'all';
+
+        // Проверка при загрузке - может уже залогинен?
+        window.addEventListener('load', function() {
+            const isAdmin = sessionStorage.getItem('adminLogged');
+            if (isAdmin === 'true') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadCards();
+            }
+        });
+
+        // Вход в админку
+        function handleAdminLogin() {
+            const login = document.getElementById('adminLogin').value;
+            const pass = document.getElementById('adminPass').value;
+
+            if (login === ADMIN_LOGIN && pass === ADMIN_PASS) {
+                sessionStorage.setItem('adminLogged', 'true');
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadCards();
+            } else {
+                document.getElementById('loginError').textContent = 'Неверный логин или пароль!';
+            }
+        }
+
+        // Выход
+        function logout() {
+            sessionStorage.removeItem('adminLogged');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Переключение вкладок
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Обновляем классы кнопок
+            document.getElementById('tabAll').classList.remove('active');
+            document.getElementById('tabPending').classList.remove('active');
+            document.getElementById('tabApproved').classList.remove('active');
+            
+            if (tab === 'all') document.getElementById('tabAll').classList.add('active');
+            if (tab === 'pending') document.getElementById('tabPending').classList.add('active');
+            if (tab === 'approved') document.getElementById('tabApproved').classList.add('active');
+            
+            loadCards();
+        }
+
+        // Загрузка карточек
+        function loadCards() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const grid = document.getElementById('cardsGrid');
+            
+            // Обновляем статистику
+            document.getElementById('totalCount').textContent = users.length;
+            document.getElementById('pendingCount').textContent = users.filter(u => !u.approved).length;
+            document.getElementById('approvedCount').textContent = users.filter(u => u.approved).length;
+            
+            // Фильтруем по вкладке
+            let filteredUsers = users;
+            if (currentTab === 'pending') {
+                filteredUsers = users.filter(u => !u.approved);
+            } else if (currentTab === 'approved') {
+                filteredUsers = users.filter(u => u.approved);
+            }
+            
+            if (filteredUsers.length === 0) {
+                grid.innerHTML = '<div class="empty-state">😢 Нет карточек</div>';
+                return;
+            }
+            
+            // Сортируем: сначала новые
+            filteredUsers.sort((a, b) => b.id - a.id);
+            
+            grid.innerHTML = filteredUsers.map(user => {
+                const isVideo = user.fileType && user.fileType.startsWith('video/');
+                const statusClass = user.approved ? 'approved' : 'pending';
+                
+                return `
+                    <div class="card ${statusClass}" data-id="${user.id}">
+                        ${isVideo ? 
+                            `<video autoplay loop muted playsinline><source src="${user.fileData}" type="${user.fileType}"></video>` : 
+                            `<div class="media" style="background-image: url('${user.fileData}');"></div>`
+                        }
+                        <div class="info">
+                            <h3>${user.nickname}</h3>
+                            <p>${user.description}</p>
+                            <span class="gender">${user.gender === 'men' ? '🚹 MANS' : '🚺 WOMANS'}</span>
+                            <div class="date">📅 ${user.date || 'Неизвестно'}</div>
+                            <div class="date">🆔 ID: ${user.id}</div>
+                        </div>
+                        <div class="actions">
+                            ${!user.approved ? 
+                                `<button class="btn approve" onclick="approveCard(${user.id})">✅ Одобрить</button>` : 
+                                `<button class="btn reject" onclick="unapproveCard(${user.id})">⏳ Снять одобрение</button>`
+                            }
+                            <button class="btn delete" onclick="deleteCard(${user.id})">🗑️ Удалить</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Одобрить карточку
+        function approveCard(id) {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const updatedUsers = users.map(user => {
+                if (user.id === id) {
+                    user.approved = true;
+                }
+                return user;
+            });
+            localStorage.setItem('users', JSON.stringify(updatedUsers));
+            loadCards();
+        }
+
+        // Снять одобрение
+        function unapproveCard(id) {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const updatedUsers = users.map(user => {
+                if (user.id === id) {
+                    user.approved = false;
+                }
+                return user;
+            });
+            localStorage.setItem('users', JSON.stringify(updatedUsers));
+            loadCards();
+        }
+
+        // Удалить карточку
+        function deleteCard(id) {
+            if (confirm('Точно удалить эту карточку?')) {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const updatedUsers = users.filter(user => user.id !== id);
+                localStorage.setItem('users', JSON.stringify(updatedUsers));
+                loadCards();
+            }
+        }
+    </script>
+</body>
+</html>

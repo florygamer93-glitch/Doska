@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a1a;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(255,107,107,0.3);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .sub {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #ff6b6b;
+            outline: none;
+        }
+
+        .gender-select {
+            display: flex;
+            gap: 15px;
+        }
+
+        .gender-option {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .gender-option.selected {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff0000;
+        }
+
+        .file-upload {
+            border: 3px dashed #ff6b6b;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff0f0;
+        }
+
+        .file-upload:hover {
+            background: #ffe0e0;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 20px auto;
+            border-radius: 10px;
+            display: none;
+            border: 3px solid #ff6b6b;
+        }
+
+        .preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #ff4444;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #ff6b6b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .modal-btn {
+            padding: 15px 40px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Регистрация</h1>
+        <div class="sub">Добавь свою карточку</div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label>🔥 Никнейм</label>
+                <input type="text" id="nickname" placeholder="Твой ник" required>
+            </div>
+
+            <div class="form-group">
+                <label>🔑 Пароль</label>
+                <input type="password" id="password" placeholder="Минимум 4 символа" required>
+            </div>
+
+            <div class="form-group">
+                <label>⚧ Твой пол</label>
+                <div class="gender-select">
+                    <div class="gender-option" onclick="selectGender('men')" id="genderMen">🚹 MANS</div>
+                    <div class="gender-option" onclick="selectGender('women')" id="genderWomen">🚺 WOMANS</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>📝 Описание</label>
+                <textarea id="description" rows="3" placeholder="Что о тебе нужно знать?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>📸 Фото или видео</label>
+                <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                    <p style="font-size: 2rem; margin-bottom: 10px;">⬆️</p>
+                    <p>Нажми чтобы загрузить</p>
+                    <p style="color: #666; margin-top: 10px;">JPG, PNG, GIF, MP4</p>
+                    <input type="file" id="fileInput" accept="image/*,video/*" onchange="previewFile(this)">
+                </div>
+                <img id="preview" class="preview" alt="Preview">
+                <video id="videoPreview" class="preview" autoplay loop muted playsinline style="display: none;"></video>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="submitForm()">ЗАРЕГИСТРИРОВАТЬ</button>
+        </form>
+
+        <a href="index.html" class="back-link">← На главную</a>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h2>✅ Готово!</h2>
+            <p id="modalMessage"></p>
+            <button class="modal-btn" onclick="goHome()">Окей</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedGender = null;
+
+        function selectGender(gender) {
+            selectedGender = gender;
+            document.querySelectorAll('.gender-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            if (gender === 'men') {
+                document.getElementById('genderMen').classList.add('selected');
+            } else {
+                document.getElementById('genderWomen').classList.add('selected');
+            }
+        }
+
+        function previewFile(input) {
+            const preview = document.getElementById('preview');
+            const videoPreview = document.getElementById('videoPreview');
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                if (file.type.startsWith('video/')) {
+                    videoPreview.style.display = 'block';
+                    preview.style.display = 'none';
+                    videoPreview.src = URL.createObjectURL(file);
+                } else {
+                    preview.style.display = 'block';
+                    videoPreview.style.display = 'none';
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        function submitForm() {
+            const nickname = document.getElementById('nickname').value.trim();
+            const password = document.getElementById('password').value;
+            const description = document.getElementById('description').value.trim() || 'Без описания';
+            const file = document.getElementById('fileInput').files[0];
+
+            // Валидация
+            if (!nickname) { alert('Введи никнейм!'); return; }
+            if (nickname.length < 2) { alert('Никнейм слишком короткий'); return; }
+            if (!password) { alert('Введи пароль!'); return; }
+            if (password.length < 4) { alert('Пароль минимум 4 символа'); return; }
+            if (!selectedGender) { alert('Выбери пол!'); return; }
+            if (!file) { alert('Загрузи фото или видео!'); return; }
+
+            // Проверка на уникальность
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.some(u => u.nickname === nickname)) {
+                alert('Этот ник уже занят!');
+                return;
+            }
+
+            // Читаем файл и сохраняем
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newUser = {
+                    id: Date.now(),
+                    nickname: nickname,
+                    password: password,
+                    gender: selectedGender,
+                    description: description,
+                    fileData: e.target.result,
+                    fileType: file.type,
+                    approved: false,
+                    date: new Date().toLocaleString()
+                };
+
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+
+                document.getElementById('modalMessage').innerHTML = 
+                    `🎉 ${nickname}, твоя карточка отправлена!<br>После проверки она появится на доске.`;
+                document.getElementById('successModal').style.display = 'flex';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
